@@ -36,8 +36,8 @@ class MonitoringService {
   bool _isMonitoring = false;
   Timer? _monitoringTimer;
   DateTime? _lastCheckTime;
-  Map<String, DateTime> _appStartTimes = {};
-  Map<String, Duration> _appUsageMap = {};
+  final Map<String, DateTime> _appStartTimes = {};
+  final Map<String, Duration> _appUsageMap = {};
 
   bool get isMonitoring => _isMonitoring;
 

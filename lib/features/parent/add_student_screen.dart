@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/database_service.dart';
-import '../../services/auth_service.dart';
 import '../../models/student_model.dart';
 import '../../core/theme.dart';
 
 class AddStudentScreen extends StatefulWidget {
   final String parentId;
-  const AddStudentScreen({Key? key, required this.parentId}) : super(key: key);
+  const AddStudentScreen({super.key, required this.parentId});
 
   @override
   State<AddStudentScreen> createState() => _AddStudentScreenState();
@@ -186,7 +185,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     Switch(
                       value: _isBlind,
                       onChanged: (value) => setState(() => _isBlind = value),
-                      activeColor: AppTheme.primaryLight,
+                      activeThumbColor: AppTheme.primaryLight,
                     ),
                   ],
                 ),

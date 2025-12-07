@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class VoiceService {
   final FlutterTts _tts = FlutterTts();
   final stt.SpeechToText _speech = stt.SpeechToText();
-  
+
   bool _isListening = false;
   bool _speechAvailable = false;
 
@@ -22,8 +23,12 @@ class VoiceService {
 
   Future<void> _initSTT() async {
     _speechAvailable = await _speech.initialize(
-      onStatus: (status) => print('Speech status: $status'),
-      onError: (error) => print('Speech error: $error'),
+      onStatus: (status) {
+        if (kDebugMode) print('Speech status: $status');
+      },
+      onError: (error) {
+        if (kDebugMode) print('Speech error: $error');
+      },
     );
   }
 
@@ -41,13 +46,17 @@ class VoiceService {
     // Re-initialize if not available
     if (!_speechAvailable) {
       _speechAvailable = await _speech.initialize(
-        onStatus: (status) => print('Speech status: $status'),
-        onError: (error) => print('Speech error: $error'),
+        onStatus: (status) {
+          if (kDebugMode) print('Speech status: $status');
+        },
+        onError: (error) {
+          if (kDebugMode) print('Speech error: $error');
+        },
       );
     }
 
     if (!_speechAvailable) {
-      print('Speech recognition not available');
+      if (kDebugMode) print('Speech recognition not available');
       return null;
     }
 
@@ -56,15 +65,19 @@ class VoiceService {
     String? result;
     _isListening = true;
 
-    final completer = Future<void>.delayed(timeout ?? const Duration(seconds: 5));
-    
+    final completer = Future<void>.delayed(
+      timeout ?? const Duration(seconds: 5),
+    );
+
     await _speech.listen(
       onResult: (val) {
         result = val.recognizedWords;
       },
       listenFor: timeout ?? const Duration(seconds: 5),
       pauseFor: const Duration(seconds: 2),
-      listenMode: stt.ListenMode.confirmation,
+      listenOptions: stt.SpeechListenOptions(
+        listenMode: stt.ListenMode.confirmation,
+      ),
     );
 
     // Wait for listening to complete
