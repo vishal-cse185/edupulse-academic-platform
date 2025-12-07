@@ -169,4 +169,31 @@ Response (one word only):
     );
     return result['classification'] == 'EDUCATIONAL';
   }
+
+  // ========== AGENT 4: Quiz Generator ==========
+  Future<List<String>> generateQuizQuestions(String context) async {
+    final prompt = '''
+You are a teacher creating a quick quiz.
+Context: $context
+
+Generate 3 simple, short questions based on the context.
+Return ONLY the questions, separated by a pipe character (|).
+Example: What is 2+2?|Who was the first president?|What color is the sky?
+''';
+
+    final content = [Content.text(prompt)];
+    try {
+      final response = await _model.generateContent(content);
+      final text = response.text?.trim() ?? '';
+      if (text.isEmpty) return [];
+      return text
+          .split('|')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    } catch (e) {
+      debugPrint('Error generating quiz: $e');
+      return [];
+    }
+  }
 }

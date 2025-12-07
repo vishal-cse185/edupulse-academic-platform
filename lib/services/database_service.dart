@@ -11,7 +11,10 @@ class DatabaseService {
 
   // ========== STUDENTS ==========
   Future<void> createStudent(StudentModel student) async {
-    await _firestore.collection('students').doc(student.studentId).set(student.toFirestore());
+    await _firestore
+        .collection('students')
+        .doc(student.studentId)
+        .set(student.toFirestore());
   }
 
   Future<StudentModel?> getStudent(String studentId) async {
@@ -20,12 +23,17 @@ class DatabaseService {
     return StudentModel.fromFirestore(doc);
   }
 
-  Future<void> updateStudent(String studentId, Map<String, dynamic> data) async {
+  Future<void> updateStudent(
+    String studentId,
+    Map<String, dynamic> data,
+  ) async {
     await _firestore.collection('students').doc(studentId).update(data);
   }
 
   Stream<StudentModel?> studentStream(String studentId) {
-    return _firestore.collection('students').doc(studentId).snapshots().map((doc) {
+    return _firestore.collection('students').doc(studentId).snapshots().map((
+      doc,
+    ) {
       if (!doc.exists) return null;
       return StudentModel.fromFirestore(doc);
     });
@@ -33,7 +41,10 @@ class DatabaseService {
 
   // ========== PARENTS ==========
   Future<void> createParent(ParentModel parent) async {
-    await _firestore.collection('parents').doc(parent.parentId).set(parent.toFirestore());
+    await _firestore
+        .collection('parents')
+        .doc(parent.parentId)
+        .set(parent.toFirestore());
   }
 
   Future<ParentModel?> getParent(String parentId) async {
@@ -43,16 +54,22 @@ class DatabaseService {
   }
 
   Future<List<StudentModel>> getParentStudents(String parentId) async {
-    final querySnapshot = await _firestore
-        .collection('students')
-        .where('parentIds', arrayContains: parentId)
-        .get();
-    return querySnapshot.docs.map((doc) => StudentModel.fromFirestore(doc)).toList();
+    final querySnapshot =
+        await _firestore
+            .collection('students')
+            .where('parentIds', arrayContains: parentId)
+            .get();
+    return querySnapshot.docs
+        .map((doc) => StudentModel.fromFirestore(doc))
+        .toList();
   }
 
   // ========== TEACHERS ==========
   Future<void> createTeacher(TeacherModel teacher) async {
-    await _firestore.collection('teachers').doc(teacher.teacherId).set(teacher.toFirestore());
+    await _firestore
+        .collection('teachers')
+        .doc(teacher.teacherId)
+        .set(teacher.toFirestore());
   }
 
   Future<TeacherModel?> getTeacher(String teacherId) async {
@@ -62,16 +79,21 @@ class DatabaseService {
   }
 
   Future<List<StudentModel>> getTeacherStudents(String teacherId) async {
-    final querySnapshot = await _firestore
-        .collection('students')
-        .where('teacherIds', arrayContains: teacherId)
-        .get();
-    return querySnapshot.docs.map((doc) => StudentModel.fromFirestore(doc)).toList();
+    final querySnapshot =
+        await _firestore
+            .collection('students')
+            .where('teacherIds', arrayContains: teacherId)
+            .get();
+    return querySnapshot.docs
+        .map((doc) => StudentModel.fromFirestore(doc))
+        .toList();
   }
 
   // ========== ASSIGNMENTS ==========
   Future<String> createAssignment(AssignmentModel assignment) async {
-    final docRef = await _firestore.collection('assignments').add(assignment.toFirestore());
+    final docRef = await _firestore
+        .collection('assignments')
+        .add(assignment.toFirestore());
     return docRef.id;
   }
 
@@ -81,24 +103,38 @@ class DatabaseService {
         .where('studentId', isEqualTo: studentId)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => AssignmentModel.fromFirestore(doc)).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => AssignmentModel.fromFirestore(doc))
+                  .toList(),
+        );
   }
 
   Future<void> submitAssignment(AssignmentSubmission submission) async {
-    await _firestore.collection('assignment_submissions').add(submission.toFirestore());
-    
+    await _firestore
+        .collection('assignment_submissions')
+        .add(submission.toFirestore());
+
     // Update assignment status
-    await _firestore.collection('assignments').doc(submission.assignmentId).update({
-      'status': AssignmentStatus.completed.name,
-    });
+    await _firestore
+        .collection('assignments')
+        .doc(submission.assignmentId)
+        .update({'status': AssignmentStatus.completed.name});
   }
 
   // ========== APP POLICIES ==========
   Future<void> saveAppPolicy(AppPolicyModel policy) async {
-    await _firestore.collection('app_policies').doc(policy.policyId).set(policy.toFirestore());
+    await _firestore
+        .collection('app_policies')
+        .doc(policy.policyId)
+        .set(policy.toFirestore());
   }
 
-  Future<AppPolicyModel?> getAppPolicy(String studentId, String parentId) async {
+  Future<AppPolicyModel?> getAppPolicy(
+    String studentId,
+    String parentId,
+  ) async {
     final policyId = '${studentId}_$parentId';
     final doc = await _firestore.collection('app_policies').doc(policyId).get();
     if (!doc.exists) return null;
@@ -107,7 +143,9 @@ class DatabaseService {
 
   Stream<AppPolicyModel?> appPolicyStream(String studentId, String parentId) {
     final policyId = '${studentId}_$parentId';
-    return _firestore.collection('app_policies').doc(policyId).snapshots().map((doc) {
+    return _firestore.collection('app_policies').doc(policyId).snapshots().map((
+      doc,
+    ) {
       if (!doc.exists) return null;
       return AppPolicyModel.fromFirestore(doc);
     });
@@ -115,18 +153,25 @@ class DatabaseService {
 
   // ========== CHAT ==========
   Future<String> createChatThread(ChatThread thread) async {
-    final docRef = await _firestore.collection('chat_threads').add(thread.toFirestore());
+    final docRef = await _firestore
+        .collection('chat_threads')
+        .add(thread.toFirestore());
     return docRef.id;
   }
 
-  Future<ChatThread?> getChatThread(String parentId, String teacherId, String studentId) async {
-    final querySnapshot = await _firestore
-        .collection('chat_threads')
-        .where('parentId', isEqualTo: parentId)
-        .where('teacherId', isEqualTo: teacherId)
-        .where('studentId', isEqualTo: studentId)
-        .limit(1)
-        .get();
+  Future<ChatThread?> getChatThread(
+    String parentId,
+    String teacherId,
+    String studentId,
+  ) async {
+    final querySnapshot =
+        await _firestore
+            .collection('chat_threads')
+            .where('parentId', isEqualTo: parentId)
+            .where('teacherId', isEqualTo: teacherId)
+            .where('studentId', isEqualTo: studentId)
+            .limit(1)
+            .get();
 
     if (querySnapshot.docs.isEmpty) return null;
     return ChatThread.fromFirestore(querySnapshot.docs.first);
@@ -139,7 +184,12 @@ class DatabaseService {
         .collection('messages')
         .orderBy('createdAt', descending: false)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => ChatMessage.fromFirestore(doc)).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => ChatMessage.fromFirestore(doc))
+                  .toList(),
+        );
   }
 
   Future<void> sendMessage(String threadId, ChatMessage message) async {
@@ -199,7 +249,7 @@ class DatabaseService {
   }
 
   // ========== CHAT UNREAD COUNTS ==========
-  
+
   /// Get unread message count for a user (parent or teacher)
   Stream<int> getUnreadChatCount(String userId) {
     return _firestore
@@ -212,7 +262,7 @@ class DatabaseService {
             final data = doc.data();
             final parentId = data['parentId'] as String?;
             final teacherId = data['teacherId'] as String?;
-            
+
             // Only count if user is a participant
             if (parentId == userId || teacherId == userId) {
               // Check if thread has unread messages for this user
@@ -229,20 +279,18 @@ class DatabaseService {
 
   /// Get unread count for a specific chat thread
   Stream<int> getThreadUnreadCount(String threadId, String currentUserId) {
-    return _firestore
-        .collection('chat_threads')
-        .doc(threadId)
-        .snapshots()
-        .map((doc) {
-          if (!doc.exists) return 0;
-          final data = doc.data()!;
-          final lastSenderId = data['lastMessageSenderId'] as String?;
-          if (lastSenderId != null && lastSenderId != currentUserId) {
-            final unreadField = '${currentUserId}_unread';
-            return (data[unreadField] ?? 1) as int;
-          }
-          return 0;
-        });
+    return _firestore.collection('chat_threads').doc(threadId).snapshots().map((
+      doc,
+    ) {
+      if (!doc.exists) return 0;
+      final data = doc.data()!;
+      final lastSenderId = data['lastMessageSenderId'] as String?;
+      if (lastSenderId != null && lastSenderId != currentUserId) {
+        final unreadField = '${currentUserId}_unread';
+        return (data[unreadField] ?? 1) as int;
+      }
+      return 0;
+    });
   }
 
   /// Mark thread as read for a user
@@ -253,7 +301,11 @@ class DatabaseService {
   }
 
   /// Update send message to mark unread for recipient
-  Future<void> sendMessageWithUnread(String threadId, ChatMessage message, String recipientId) async {
+  Future<void> sendMessageWithUnread(
+    String threadId,
+    ChatMessage message,
+    String recipientId,
+  ) async {
     await _firestore
         .collection('chat_threads')
         .doc(threadId)
@@ -267,5 +319,35 @@ class DatabaseService {
       'lastMessageSenderId': message.senderId,
       '${recipientId}_unread': true,
     });
+  }
+
+  // ========== NOTES (DESKTOP) ==========
+  Future<void> createNote(String studentId, String content) async {
+    await _firestore
+        .collection('students')
+        .doc(studentId)
+        .collection('notes')
+        .add({
+          'studentId': studentId,
+          'content': content,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+  }
+
+  Stream<List<Map<String, dynamic>>> getStudentNotes(String studentId) {
+    return _firestore
+        .collection('students')
+        .doc(studentId)
+        .collection('notes')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) {
+                final data = doc.data();
+                data['id'] = doc.id;
+                return data;
+              }).toList(),
+        );
   }
 }
