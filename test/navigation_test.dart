@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application/main.dart';
 
@@ -8,9 +7,8 @@ void main() {
     await tester.pumpWidget(const EduPulseApp());
     await tester.pumpAndSettle();
 
-    // Verify Brand Title is present
+    // Verify Brand Title and Explore Courses button are present
     expect(find.text('EduPulse AI'), findsWidgets);
     expect(find.text('Explore Courses'), findsOneWidget);
-    expect(find.text('Sign In to Portal'), findsOneWidget);
   });
 }

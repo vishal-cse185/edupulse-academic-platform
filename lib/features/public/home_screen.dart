@@ -4,19 +4,35 @@ import '../../core/constants.dart';
 import '../../core/mock_data.dart';
 import '../../core/theme.dart';
 import '../../models/course_model.dart';
+import '../../services/auth_service.dart';
 import '../../services/course_service.dart';
 import '../../widgets/course_card.dart';
 import '../../widgets/public_footer.dart';
 import '../../widgets/public_header.dart';
+import '../../widgets/ai_study_tutor_modal.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final courseService = Provider.of<CourseService>(context);
+    final authService = Provider.of<AuthService>(context);
     final featuredCourses = courseService.featuredCourses;
-    final isDesktop = MediaQuery.of(context).size.width > 800;
+    final isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -24,209 +40,205 @@ class HomeScreen extends StatelessWidget {
           children: [
             const PublicHeader(activeRoute: AppConstants.routeHome),
 
-            // Hero Banner Section
+            // 1. Institutional Hero Section
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 64 : 24,
-                vertical: isDesktop ? 64 : 40,
+              decoration: const BoxDecoration(
+                gradient: AppColors.heroGradient,
               ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFF0F172A),
-                    AppColors.primaryDark,
-                    const Color(0xFF1E3A8A),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 64 : 20,
+                vertical: isDesktop ? 72 : 44,
               ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Accreditation Pill
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                          horizontal: 14, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6366F1).withOpacity(0.2),
+                        color: Colors.white.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: const Color(0xFF818CF8).withOpacity(0.4)),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.15)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
-                          Icon(Icons.auto_awesome,
-                              size: 14, color: Color(0xFF818CF8)),
-                          SizedBox(width: 6),
-                          Text(
-                            'AI-Powered Academic Intelligence 2026',
-                            style: TextStyle(
-                              color: Color(0xFFC7D2FE),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                          Icon(Icons.verified,
+                              color: Color(0xFF34D399), size: 15),
+                          SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              'Accredited AI Academic Intelligence Standard 2026',
+                              style: TextStyle(
+                                color: Color(0xFFE2E8F0),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
+
+                    // Main Headline
                     Text(
-                      'Unified Education Management &\nPredictive Academic Intelligence',
+                      'Unified Education Management\n& Predictive Academic Intelligence',
                       style: TextStyle(
-                        fontSize: isDesktop ? 42 : 28,
-                        fontWeight: FontWeight.bold,
+                        fontSize: isDesktop ? 46 : 28,
+                        fontWeight: FontWeight.w800,
                         color: Colors.white,
-                        height: 1.2,
-                        letterSpacing: -0.5,
+                        letterSpacing: -1.0,
+                        height: 1.15,
                       ),
                     ),
                     const SizedBox(height: 16),
                     ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 750),
+                      constraints: const BoxConstraints(maxWidth: 780),
                       child: Text(
-                        'Manage students, teachers, courses, attendance, and examinations with automated AI diagnostics for early risk detection and personalized study recommendations.',
+                        'Empowering students, distinguished faculty, and academic deans with automated attendance tracking, multi-factor risk diagnostics, continuous assessment, and 24/7 Socratic AI tutoring.',
                         style: TextStyle(
                           fontSize: isDesktop ? 16 : 14,
-                          color: const Color(0xFFCBD5E1),
+                          color: const Color(0xFF94A3B8),
                           height: 1.6,
                         ),
                       ),
                     ),
                     const SizedBox(height: 32),
+
+                    // Quick Search & Action Buttons
                     Wrap(
-                      spacing: 16,
+                      spacing: 12,
                       runSpacing: 12,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         ElevatedButton.icon(
                           onPressed: () => Navigator.pushNamed(
                               context, AppConstants.routeCourses),
-                          icon: const Icon(Icons.search, size: 18),
+                          icon: const Icon(Icons.explore_outlined, size: 18),
                           label: const Text('Explore Courses'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
-                            foregroundColor: Colors.white,
+                            backgroundColor: AppColors.accent,
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 16),
+                                horizontal: 22, vertical: 16),
+                            textStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
                           ),
                         ),
                         OutlinedButton.icon(
-                          onPressed: () => Navigator.pushNamed(
-                              context, AppConstants.routeUserAuth),
-                          icon: const Icon(Icons.login, size: 18, color: Colors.white),
-                          label: const Text('Sign In to Portal',
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (ctx) => const AIStudyTutorModal(),
+                            );
+                          },
+                          icon: const Icon(Icons.auto_awesome,
+                              color: Color(0xFF818CF8), size: 18),
+                          label: const Text('Launch 24/7 AI Tutor',
                               style: TextStyle(color: Colors.white)),
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white70),
+                            side: const BorderSide(color: Color(0xFF475569)),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 16),
+                                horizontal: 20, vertical: 16),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pushNamed(
+                              context, AppConstants.routeUserAuth),
+                          child: Text(
+                            authService.isAuthenticated
+                                ? 'Access Workspace Portal →'
+                                : 'Sign In to Portal',
+                            style: const TextStyle(
+                              color: Color(0xFFCBD5E1),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 48),
+
+                    // Live Institutional Metrics Ribbon
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 18),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.04),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withOpacity(0.08)),
+                      ),
+                      child: Wrap(
+                        spacing: 36,
+                        runSpacing: 16,
+                        alignment: WrapAlignment.spaceAround,
+                        children: [
+                          _buildHeroMetric('14,500+', 'Enrolled Students'),
+                          _buildHeroMetric('98.4%', 'Accreditation Compliance'),
+                          _buildHeroMetric('< 48 hrs', 'Early Risk Intervention'),
+                          _buildHeroMetric('24 / 7', 'Socratic AI Tutoring'),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
 
-            // Announcements Section
+            // 2. Announcements & Institutional Notices
             Container(
+              width: double.infinity,
               padding: EdgeInsets.symmetric(
                 horizontal: isDesktop ? 64 : 20,
-                vertical: 32,
+                vertical: 20,
               ),
               color: const Color(0xFFF1F5F9),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Row(
-                          children: [
-                            Icon(Icons.campaign, color: AppColors.primary),
-                            SizedBox(width: 8),
-                            Text(
-                              'Latest Announcements',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                          ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        'OFFICIAL NOTICE',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    ...MockData.announcements.map((anc) {
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: anc.isUrgent
-                                      ? AppColors.errorBg
-                                      : AppColors.primary.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  anc.category.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: anc.isUrgent
-                                        ? AppColors.error
-                                        : AppColors.primary,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      anc.title,
-                                      style: const TextStyle(
-                                        fontSize: 14.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.textPrimary,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      anc.content,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Midterm Examination Schedule for Fall 2026 is published. Students with <75% attendance must review remedial intervention protocols with faculty.',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w500,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      );
-                    }),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
 
-            // AI Intelligence Feature Highlights
+            // 3. Four Core Educational Pillars
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: isDesktop ? 64 : 20,
@@ -235,60 +247,61 @@ class HomeScreen extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'AI-Powered Academic Intelligence',
+                      'Autonomous Academic Architecture',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
+                        letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     const Text(
-                      'Proactive student risk assessment, weak concept discovery, and automated adaptive study plans.',
+                      'Engineered for comprehensive student tracking, teacher empowerment, and administrative compliance.',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
                     GridView.count(
-                      crossAxisCount: isDesktop ? 4 : (MediaQuery.of(context).size.width > 550 ? 2 : 1),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: isDesktop ? 4 : 1,
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
-                      childAspectRatio: isDesktop ? 1.1 : 1.3,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      childAspectRatio: isDesktop ? 1.15 : 2.5,
                       children: [
-                        _buildFeatureCard(
-                          icon: Icons.psychology,
-                          color: const Color(0xFF6366F1),
-                          title: 'At-Risk Detection',
-                          description:
-                              'Identifies students at risk before exams based on attendance and submission metrics.',
+                        _buildPillarCard(
+                          icon: Icons.psychology_outlined,
+                          title: 'Multi-Factor AI Diagnostics',
+                          desc:
+                              'Evaluates 40% exams, 35% assignments, and 25% attendance to flag early attrition risks.',
+                          color: AppColors.accent,
                         ),
-                        _buildFeatureCard(
-                          icon: Icons.biotech,
+                        _buildPillarCard(
+                          icon: Icons.checklist_rounded,
+                          title: 'Automated Code & Rubrics',
+                          desc:
+                              'Instant grading engine with detailed syntax, complexity, and conceptual feedback.',
                           color: AppColors.secondary,
-                          title: 'Weak Topic Diagnostics',
-                          description:
-                              'Discovers precise concept gaps in dynamic programming, vector math, and algorithms.',
                         ),
-                        _buildFeatureCard(
-                          icon: Icons.auto_awesome,
-                          color: const Color(0xFFF59E0B),
-                          title: 'Personalized Study Plans',
-                          description:
-                              'Generates actionable daily study recommendations with estimated completion times.',
+                        _buildPillarCard(
+                          icon: Icons.calendar_month_outlined,
+                          title: 'Attendance Compliance',
+                          desc:
+                              'Live accreditation threshold tracking with immediate warning alerts for rates <75%.',
+                          color: AppColors.warning,
                         ),
-                        _buildFeatureCard(
-                          icon: Icons.insights,
-                          color: AppColors.primary,
-                          title: 'Executive Analytics',
-                          description:
-                              'Supplies cohort-level heatmaps and decision-support alerts to teachers and deans.',
+                        _buildPillarCard(
+                          icon: Icons.account_balance_outlined,
+                          title: 'Executive Transcripts',
+                          desc:
+                              'Printable official academic evaluation transcripts with department bottleneck analytics.',
+                          color: AppColors.success,
                         ),
                       ],
                     ),
@@ -297,7 +310,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Featured Courses Section
+            // 4. Featured Courses Section
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: isDesktop ? 64 : 20,
@@ -318,18 +331,19 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
                             Text(
-                              'Featured Courses',
+                              'Featured Academic Courses',
                               style: TextStyle(
-                                fontSize: 22,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textPrimary,
+                                letterSpacing: -0.5,
                               ),
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'Top-rated courses taught by distinguished faculty',
+                              'Accredited curriculum taught by distinguished university faculty',
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 13.5,
                                 color: AppColors.textSecondary,
                               ),
                             ),
@@ -338,8 +352,9 @@ class HomeScreen extends StatelessWidget {
                         TextButton.icon(
                           onPressed: () => Navigator.pushNamed(
                               context, AppConstants.routeCourses),
-                          icon: const Text('View All Courses'),
-                          label: const Icon(Icons.arrow_forward, size: 16),
+                          icon: const Text('View All Offerings'),
+                          label: const Icon(Icons.arrow_forward_rounded,
+                              size: 16),
                         ),
                       ],
                     ),
@@ -373,11 +388,11 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Top Teachers Section
+            // 5. Top Teachers / Faculty Showcase
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: isDesktop ? 64 : 20,
-                vertical: 36,
+                vertical: 48,
               ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
@@ -385,14 +400,23 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Distinguished Faculty & Instructors',
+                      'Distinguished Faculty & Department Heads',
                       style: TextStyle(
-                        fontSize: 22,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
+                        letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Academic mentors driving research and student success.',
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     if (isDesktop)
                       Row(
                         children: [
@@ -400,8 +424,9 @@ class HomeScreen extends StatelessWidget {
                             child: _buildTeacherCard(
                               name: 'Dr. Alan Turing',
                               title: 'Professor & Head of Computing',
-                              department: 'Computer Science',
-                              courses: 'CS301, SE205',
+                              department: 'Computer Science & Engineering',
+                              courses: 'CS301 (DSA), SE205 (Software Eng)',
+                              rating: '4.9 ★ (120+ reviews)',
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -409,8 +434,9 @@ class HomeScreen extends StatelessWidget {
                             child: _buildTeacherCard(
                               name: 'Dr. Ada Lovelace',
                               title: 'Lead AI Researcher & Faculty',
-                              department: 'Artificial Intelligence',
-                              courses: 'AI402, DS104',
+                              department: 'Artificial Intelligence & Data',
+                              courses: 'AI402 (Deep Learning), DS104 (Stats)',
+                              rating: '5.0 ★ (95+ reviews)',
                             ),
                           ),
                         ],
@@ -421,15 +447,17 @@ class HomeScreen extends StatelessWidget {
                           _buildTeacherCard(
                             name: 'Dr. Alan Turing',
                             title: 'Professor & Head of Computing',
-                            department: 'Computer Science',
-                            courses: 'CS301, SE205',
+                            department: 'Computer Science & Engineering',
+                            courses: 'CS301 (DSA), SE205 (Software Eng)',
+                            rating: '4.9 ★ (120+ reviews)',
                           ),
                           const SizedBox(height: 12),
                           _buildTeacherCard(
                             name: 'Dr. Ada Lovelace',
                             title: 'Lead AI Researcher & Faculty',
-                            department: 'Artificial Intelligence',
-                            courses: 'AI402, DS104',
+                            department: 'Artificial Intelligence & Data',
+                            courses: 'AI402 (Deep Learning), DS104 (Stats)',
+                            rating: '5.0 ★ (95+ reviews)',
                           ),
                         ],
                       ),
@@ -445,11 +473,37 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard({
+  Widget _buildHeroMetric(String val, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          val,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF94A3B8),
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPillarCard({
     required IconData icon,
-    required Color color,
     required String title,
-    required String description,
+    required String desc,
+    required Color color,
   }) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -464,10 +518,10 @@ class HomeScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: color.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, size: 22, color: color),
           ),
           const SizedBox(height: 14),
           Text(
@@ -480,7 +534,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            description,
+            desc,
             style: const TextStyle(
               fontSize: 12.5,
               color: AppColors.textSecondary,
@@ -497,19 +551,21 @@ class HomeScreen extends StatelessWidget {
     required String title,
     required String department,
     required String courses,
+    required String rating,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 28,
-            backgroundColor: AppColors.primary.withOpacity(0.1),
+            radius: 26,
+            backgroundColor: AppColors.primary.withOpacity(0.08),
             child: Text(
               name.split(' ').last[0],
               style: const TextStyle(
@@ -524,28 +580,57 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEF3C7),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        rating,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF92400E),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 2),
                 Text(
                   title,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: AppColors.secondary,
+                    color: AppColors.accent,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
-                  'Department: $department • Courses: $courses',
+                  department,
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Active Courses: $courses',
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],

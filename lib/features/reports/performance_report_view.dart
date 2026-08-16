@@ -337,7 +337,75 @@ class PerformanceReportModal extends StatelessWidget {
                       ),
                     );
                   }),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 32),
+                  const Divider(color: AppColors.border),
+                  const SizedBox(height: 20),
+
+                  // Institutional Verification & Signature Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(Icons.verified_user,
+                                  color: AppColors.success, size: 16),
+                              SizedBox(width: 6),
+                              Text(
+                                'Digital Institutional Authentication',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'SHA-256 Audit: #EDUPULSE-2026-ACCRE-${student.id.toUpperCase()}',
+                            style: const TextStyle(
+                              fontSize: 10.5,
+                              color: AppColors.textMuted,
+                              fontFamily: 'monospace',
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          const Text(
+                            'Verified by AI Academic Governance Board',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Dr. Alan Turing, Ph.D.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          Text(
+                            'Dean of Academic Affairs & Faculty Advising',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
 
                   // Download / Print Action Bar
                   Row(

@@ -4,45 +4,44 @@ import '../core/theme.dart';
 class StatCard extends StatelessWidget {
   final String title;
   final String value;
-  final String? subtitle;
+  final String subtitle;
   final IconData icon;
-  final Color? iconColor;
-  final Color? iconBgColor;
+  final Color iconColor;
   final String? trendText;
-  final bool isTrendPositive;
+  final bool isPositiveTrend;
+  final bool? isTrendPositive;
   final VoidCallback? onTap;
 
   const StatCard({
     super.key,
     required this.title,
     required this.value,
-    this.subtitle,
+    required this.subtitle,
     required this.icon,
-    this.iconColor,
-    this.iconBgColor,
+    this.iconColor = AppColors.primary,
     this.trendText,
-    this.isTrendPositive = true,
+    this.isPositiveTrend = true,
+    this.isTrendPositive,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final effectiveIconColor = iconColor ?? AppColors.primary;
-    final effectiveBgColor = iconBgColor ?? AppColors.primary.withOpacity(0.1);
+    final effectivePositive = isTrendPositive ?? isPositiveTrend;
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 10,
+              color: const Color(0xFF0F172A).withOpacity(0.02),
+              blurRadius: 12,
               offset: const Offset(0, 4),
             ),
           ],
@@ -54,43 +53,66 @@ class StatCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: effectiveBgColor,
-                    borderRadius: BorderRadius.circular(12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
                   ),
-                  child: Icon(icon, color: effectiveIconColor, size: 22),
                 ),
-                if (trendText != null)
+                Container(
+                  padding: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, size: 19, color: iconColor),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                if (trendText != null) ...[
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: isTrendPositive
+                      color: effectivePositive
                           ? AppColors.successBg
                           : AppColors.errorBg,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          isTrendPositive
-                              ? Icons.trending_up
-                              : Icons.trending_down,
-                          size: 14,
-                          color: isTrendPositive
+                          effectivePositive
+                              ? Icons.arrow_upward_rounded
+                              : Icons.arrow_downward_rounded,
+                          size: 11,
+                          color: effectivePositive
                               ? AppColors.success
                               : AppColors.error,
                         ),
-                        const SizedBox(width: 3),
+                        const SizedBox(width: 2),
                         Text(
                           trendText!,
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: isTrendPositive
+                            fontWeight: FontWeight.bold,
+                            color: effectivePositive
                                 ? AppColors.success
                                 : AppColors.error,
                           ),
@@ -98,36 +120,20 @@ class StatCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 6),
+                ],
+                Expanded(
+                  child: Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textMuted,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 13,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            if (subtitle != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle!,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textMuted,
-                ),
-              ),
-            ],
           ],
         ),
       ),
