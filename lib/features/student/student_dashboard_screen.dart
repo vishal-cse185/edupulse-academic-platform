@@ -13,6 +13,8 @@ import '../../widgets/stat_card.dart';
 import '../../widgets/ai_insight_card.dart';
 import '../../widgets/course_card.dart';
 import '../../widgets/public_header.dart';
+import '../../widgets/ai_study_tutor_modal.dart';
+import '../../widgets/gpa_simulator_modal.dart';
 import '../reports/performance_report_view.dart';
 
 class StudentDashboardScreen extends StatelessWidget {
@@ -78,10 +80,14 @@ class StudentDashboardScreen extends StatelessWidget {
               color: Colors.white,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 16,
+                  runSpacing: 12,
                   children: [
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         CircleAvatar(
                           radius: 28,
@@ -98,6 +104,7 @@ class StudentDashboardScreen extends StatelessWidget {
                         const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Row(
                               children: [
@@ -140,16 +147,37 @@ class StudentDashboardScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, AppConstants.routeStudentProgress);
-                      },
-                      icon: const Icon(Icons.insights, size: 16),
-                      label: const Text('My AI Progress & Plan'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.accent,
-                      ),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (ctx) => GPASimulatorModal(
+                                currentAttendance: attendancePct,
+                                currentGpa: gpa,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.tune, size: 15),
+                          label: const Text('GPA Simulator'),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, AppConstants.routeStudentProgress);
+                          },
+                          icon: const Icon(Icons.insights, size: 15),
+                          label: const Text('AI Progress Plan'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.accent,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -483,6 +511,20 @@ class StudentDashboardScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (ctx) => const AIStudyTutorModal(),
+          );
+        },
+        icon: const Icon(Icons.auto_awesome, color: Colors.white),
+        label: const Text('24/7 AI Tutor',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF4F46E5),
       ),
     );
   }

@@ -1,0 +1,42 @@
+name: EduPulse CI / CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, dev-vishal-v1, dev* ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-and-build:
+    name: Run Unit Tests & Build Web App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Verify Static Analysis & Lints
+        run: flutter analyze --no-fatal-infos
+
+      - name: Execute Automated Test Suites
+        run: flutter test --coverage
+
+      - name: Build Web Production Artifacts
+        run: flutter build web --release
+
+      - name: Upload Test Coverage Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcov-coverage
+          path: coverage/lcov.info
+          if-no-files-found: ignore
