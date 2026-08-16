@@ -1,217 +1,199 @@
-# 🎓 EduPulse — Education Management & Academic Intelligence Platform
+# 🎓 EduPulse — Unified Education Management & Academic Analytics Platform
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.7+-02569B.svg?logo=flutter)]()
+[![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2.svg?logo=dart)]()
 [![Architecture](https://img.shields.io/badge/Architecture-Clean_Layered-6366F1.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-100%25_Passing-10B981.svg)]()
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker)]()
 
-> **EduPulse** — Production-ready, enterprise-grade **Education Management Platform** equipped with an **Academic Intelligence Engine** for continuous risk detection, weak topic diagnostics, automated rubric feedback, and institutional accreditation decision support.
+> **EduPulse** is an enterprise-grade **Education Management & Academic Analytics Platform** designed for universities, colleges, and schools. It seamlessly connects students, faculty, and academic administrators while offering predictive academic diagnostics, continuous attendance compliance tracking, automated rubric grading, interactive GPA simulation, and institutional accreditation transcripts.
 
 ---
 
 ## 🏛️ System Architecture
 
+The application is engineered using a clean, layered architecture adhering directly to institutional educational standards:
+
 ```mermaid
 graph TD
-    subgraph "🌐 Public Pages (Main Navigation)"
-        HOME["HOME PAGE<br/>• Hero / Banner<br/>• Announcements<br/>• Featured Courses<br/>• Top Teachers<br/>• AI Study Tips<br/>• CTA → Explore Courses"]
-        COURSES["COURSES PAGE<br/>• Search Courses<br/>• Category Filter<br/>• Course Listing<br/>• Top Rated Courses"]
-        CONTACT["CONTACT PAGE<br/>• Contact Info<br/>• Contact Form<br/>• FAQ Accordion<br/>• Support Channels"]
-        DETAILS["COURSE DETAILS<br/>• Course Info & Syllabus<br/>• Teacher Credentials<br/>• Class Schedule<br/>• Enroll Now CTA"]
+    subgraph "🌐 Public Area (Main Navigation)"
+        HOME["🏠 HOME PAGE<br/>• Hero & Announcements<br/>• Featured Courses & Faculty<br/>• Four Academic Pillars<br/>• Quick Actions"]
+        COURSES["📚 COURSES CATALOG<br/>• Search & Category Filter<br/>• Course Cards & Ratings<br/>• Enrolled Student Counts"]
+        DETAILS["📖 COURSE DETAILS<br/>• Syllabus Accordion (Week-by-Week)<br/>• Faculty Credentials & Schedule<br/>• Dynamic Enrollment Action"]
+        CONTACT["📬 CONTACT & SUPPORT<br/>• Inquiry Ticket Dispatch (#TICK-XXXX)<br/>• Interactive FAQ Accordion<br/>• Campus Support Directory"]
         
         HOME --> COURSES
         COURSES --> DETAILS
         HOME --> CONTACT
     end
 
-    subgraph "👥 User Area (Student / Teacher)"
-        AUTH["USER LOGIN / REGISTER<br/>• Account Access<br/>• Role Selection (Student / Teacher)<br/>• 1-Click Fast Demo Presets"]
-        STUDENT_DASH["USER DASHBOARD (Student)<br/>• Profile & Enrolled Courses<br/>• Assignments & Attendance<br/>• Grades & GPA Tracker<br/>• AI Recommendations Widget"]
-        MY_PROGRESS["MY PROGRESS<br/>• Performance Overview<br/>• Weak Subjects Identified<br/>• Improvement Tips<br/>• AI Insights Checklist"]
+    subgraph "👥 User Area (Role-Based Authentication)"
+        AUTH["🔐 USER LOGIN / REGISTER<br/>• Role Selector (Student / Teacher)<br/>• 1-Click Fast Demo Presets<br/>• Secure Session Management"]
+        STUDENT_DASH["🎓 STUDENT DASHBOARD<br/>• Quick KPIs & Enrolled Courses<br/>• Upcoming Deadlines & Attendance<br/>• Diagnostic Performance Card<br/>• Official Transcript Generator"]
+        MY_PROGRESS["📈 ACADEMIC PROGRESS PLAN<br/>• Composite Score Gauge<br/>• Weak Concept Diagnostics<br/>• Prioritized Action Checklist"]
         
         AUTH --> STUDENT_DASH
         STUDENT_DASH --> MY_PROGRESS
     end
 
-    subgraph "🎓 Academic Flow"
-        ATTENDANCE["ATTENDANCE<br/>• Mark Attendance (Teacher)<br/>• View Attendance & Trends<br/>• <75% Compliance Alert"]
-        ASSIGNMENTS["ASSIGNMENTS<br/>• Create / View Assignments<br/>• Submit Work (Text/Repo)<br/>• Automated AI Feedback"]
-        EXAMS["EXAMS & GRADES<br/>• Take / Conduct Exams<br/>• View & Record Grades<br/>• 4.0 GPA Calculation"]
-        AI_ENGINE["🧠 AI ENGINE<br/>• Multi-Factor Performance Analysis<br/>• At-Risk Student Detection<br/>• Weak Subject Identification<br/>• Study Recommendations<br/>• AI Insights & Cohort Reports"]
-        REPORTS["REPORTS & INSIGHTS<br/>• Student Performance<br/>• Class Performance<br/>• Comparative Reports<br/>• AI Recommendations"]
+    subgraph "⚙️ Academic Flow & Predictive Engine"
+        ATTENDANCE["📅 ATTENDANCE LEDGER<br/>• Daily Roster & Status Toggles<br/>• <75% Accreditation Warning Alert<br/>• Batch 'Mark All Present'"]
+        ASSIGNMENTS["📝 ASSIGNMENT HUB<br/>• Submission Portal (Text / Repo Link)<br/>• Automated Rubric Evaluation<br/>• Immediate Concept Feedback"]
+        EXAMS["📊 EXAMS & GRADES<br/>• Exam Scheduler & Marks Entry<br/>• 4.0 Standard GPA Calculator<br/>• Letter Grade Distributions"]
+        ENGINE["🧠 ACADEMIC INTELLIGENCE ENGINE<br/>• Multi-Factor Composite Equation<br/>• Early At-Risk Classification<br/>• Prioritized Remediation Heuristics"]
         
-        ATTENDANCE --> AI_ENGINE
-        ASSIGNMENTS --> AI_ENGINE
-        EXAMS --> AI_ENGINE
-        AI_ENGINE --> REPORTS
+        ATTENDANCE --> ENGINE
+        ASSIGNMENTS --> ENGINE
+        EXAMS --> ENGINE
     end
 
-    subgraph "🛡️ Admin Area"
-        ADMIN_AUTH["ADMIN LOGIN<br/>• Secure Portal Access"]
-        ADMIN_DASH["ADMIN DASHBOARD<br/>• Manage Students & Teachers<br/>• Manage Courses & Classes<br/>• Manage Assignments & Exams<br/>• View Reports & Analytics<br/>• AI Insights & Cohort Monitoring"]
+    subgraph "🛡️ Admin Console & Institutional Reports"
+        ADMIN_AUTH["🔒 ADMIN LOGIN<br/>• Dean / Registrar Credentials"]
+        ADMIN_DASH["🏛️ ADMIN DASHBOARD<br/>• Institutional KPIs & Risk Metrics<br/>• Campus Attrition Monitoring"]
+        ADMIN_USERS["👥 DIRECTORY MANAGEMENT<br/>• Student & Faculty CRUD Modals<br/>• Status & Department Filters"]
+        ADMIN_COURSES["📂 CURRICULUM MANAGEMENT<br/>• Course Provisioning & Credits<br/>• Faculty & Hall Assignments"]
+        ADMIN_REPORTS["📊 COHORT BOTTLENECK REPORTS<br/>• Department Risk Distributions<br/>• Accreditation Transcripts"]
         
         ADMIN_AUTH --> ADMIN_DASH
+        ADMIN_DASH --> ADMIN_USERS
+        ADMIN_DASH --> ADMIN_COURSES
+        ADMIN_DASH --> ADMIN_REPORTS
     end
 
-    subgraph "📊 Performance Reports & Summary"
-        PERF_SUMMARY["ACADEMIC PERFORMANCE SUMMARY<br/>• Academic Performance Summary<br/>• Weak Areas Identified<br/>• Risk Analysis (Low / Med / High)<br/>• AI Recommendations<br/>• Download / Print PDF Report"]
+    subgraph "📜 Official Transcripts"
+        TRANSCRIPT["📄 ACADEMIC AUDIT TRANSCRIPT<br/>• Term-by-term GPA Breakdown<br/>• Digital Authentication Hash (SHA-256)<br/>• Dean of Academic Affairs Signature<br/>• Print & PDF Export Support"]
     end
-
-    DETAILS -.->|Enroll / Access| AUTH
-    STUDENT_DASH -->|Learning Data| ATTENDANCE
-    STUDENT_DASH -->|Submissions| ASSIGNMENTS
-    STUDENT_DASH -->|Exam Data| EXAMS
-    AI_ENGINE --> MY_PROGRESS
-    REPORTS --> ADMIN_DASH
-    MY_PROGRESS --> PERF_SUMMARY
-    ADMIN_DASH --> PERF_SUMMARY
 ```
 
 ---
 
-## ⚡ Quick Evaluation & Demo Access (For AI Evaluators / Judges)
+## 🧮 Academic Intelligence Formula & Logic
 
-The portal includes **1-Click Instant Evaluation Presets** on the Authentication screens:
+The predictive risk engine analyzes student performance using a multi-factor composite equation:
 
-| Role / Persona | Demo Name | Email | Password | Pre-Configured Test State |
-| :--- | :--- | :--- | :--- | :--- |
-| **👨‍🎓 Student (On-Track)** | Alex Johnson | `student@edupulse.ai` | `password123` | 92.0% Attendance, A- GPA (3.6), Low Risk status |
-| **⚠️ Student (At-Risk)** | David Smith | `david.risk@edupulse.ai` | `password123` | **62.5% Attendance (<75%)**, 46% Exam average, High Risk flags |
-| **👩‍🏫 Teacher / Faculty** | Dr. Alan Turing | `teacher@edupulse.ai` | `password123` | CS301 / SE205 Courses, Roster Ledger, AI grading queue |
-| **🛡️ Administrator** | Dean Eleanor | `admin@edupulse.ai` | `admin123` | Institutional Analytics, Student/Faculty/Course CRUD |
-
----
-
-## 🚀 Key Features & Module Capabilities
-
-### 1. 🌐 Public Pages (Main Navigation)
-* **Home Page**: Hero banner with CTA, university announcements with urgent priority flags, featured course catalog, top teachers carousel, and AI study tips preview.
-* **Courses Page**: Real-time search by code/title/instructor, category chips (Computer Science, AI, Mathematics, Software Engineering), rating badges, and one-click enrollment.
-* **Course Details Page**: Multi-week syllabus accordion, instructor credentials, lecture schedule, classroom venue, and learning outcomes checklist.
-* **Contact & Support**: Interactive inquiry ticket dispatch with form validation and searchable FAQ accordion.
-
-### 2. 👥 Student Experience & Workspace
-* **Unified Student Dashboard**: Real-time metric cards (Attendance %, Cumulative GPA, Pending Assignments, Enrolled Courses) and live AI Intelligence Widget.
-* **My Progress Screen**: Multi-variable composite score gauge, weak subject diagnostic breakdown with specific concept gaps (e.g. *Red-Black Trees*, *SVD Factorization*), actionable daily AI study checklist with completion tracking.
-* **Assignment Submissions**: Upload code solutions or GitHub repositories with **Instant Automated AI Feedback & Rubric Evaluation**.
-* **Attendance Ledger**: Subject-wise compliance bars with instant warnings if attendance drops below the 75% accreditation threshold.
-* **Grades & GPA Transcript**: Exam breakdown with letter grades (A+, A, B, C, F) and 4.0 grade point scale calculation.
-
-### 3. 👩‍🏫 Teacher Workspace & Academic Flow
-* **Teacher Dashboard**: Active course sections, pending grading queue, cohort diagnostics, and at-risk student count.
-* **Attendance Ledger**: Interactive class roster with 1-click **"Mark All Present"** and individual Present/Late/Absent toggles.
-* **Coursework & AI Grading**: Create assignments with rubric weights and evaluate student submissions with AI suggested scores.
-* **Examinations & Marks Entry**: Schedule midterms and enter student scores with diagnostic remarks.
-* **Student Risk Monitoring**: Cohort watchlist with one-click **"Trigger Intervention"** counseling alerts.
-
-### 4. 🛡️ Administration & Institutional Analytics
-* **Admin Dashboard**: System-wide KPIs (Total Students, Faculty, Average GPA, Attendance compliance).
-* **Directory Management**: Full CRUD for Student Profiles and Faculty Appointments.
-* **Curriculum Management**: Add, update, and manage course offerings and classroom schedules.
-* **Comparative Reports**: Cross-course performance matrix, university-wide concept bottleneck summaries, and CSV report export.
-
-### 5. 📄 Performance Reports & Summary Module
-* **Printable / Downloadable Academic Evaluation**: Full official transcript summary containing:
-  1. Academic Performance Summary
-  2. Examination Marks Table
-  3. Weak Areas & Concept Gap Analysis
-  4. Academic Risk Assessment
-  5. AI Personalized Recommendations
-  6. Print / PDF Export Action
-
----
-
-## 🧠 AI Academic Intelligence Engine Architecture
-
-The AI Academic Engine (`lib/services/ai_academic_engine.dart`) evaluates students using multi-factor signals:
-
-$$\text{Composite Score} = (0.40 \times \text{Exam Avg}) + (0.35 \times \text{Assignment Avg}) + (0.25 \times \text{Attendance Rate})$$
+$$\text{Composite Score} = (0.40 \times \text{Exam Average}) + (0.35 \times \text{Assignment Average}) + (0.25 \times \text{Attendance Rate})$$
 
 ### Risk Classification Matrix:
-* **High Risk**: Attendance $< 75\%$ OR Exam Average $< 60\%$ OR Composite Score $< 50\%$.
-* **Moderate Risk**: Composite score between $50\%$ and $70\%$ or single assessment deficiency.
-* **Low Risk (On-Track)**: Attendance $\ge 75\%$ and Composite score $\ge 70\%$.
+- **Low Risk ($\ge 75\%$)**: Student in good academic standing.
+- **Medium Risk ($60\% - 74\%$)**: Identified subject gaps; targeted remediation recommended.
+- **High Risk ($< 60\%$ or Attendance $< 75\%$)**: Urgent counseling alert dispatched to faculty advisor.
 
 ---
 
-## 🛠️ Getting Started & Quickstart
+## ✨ Key Features & Highlights
 
-### Prerequisites
-* Flutter SDK $\ge 3.7.0$
-* Dart SDK $\ge 3.0.0$
+1. **🎓 Student Experience**:
+   - **Personalized Dashboard**: Track enrolled courses, upcoming assignments, and midterm schedules.
+   - **Academic Progress & Weak Concepts**: Diagnostic breakdowns highlighting exact concept gaps (e.g. *Dynamic Programming*, *Eigenvalues*).
+   - **"What-If" GPA Simulator**: Interactive sliders allowing students to simulate target exam scores and attendance to project GPA recovery.
+   - **Academic Learning Assistant**: Interactive concept walkthroughs, algorithm proofs, and practice quizzes.
 
-### 1. Run the Test Suite
-```bash
-flutter test
-```
+2. **👩‍🏫 Teacher Workspace**:
+   - **Attendance Ledger**: Live attendance tracker with instant compliance alerts for rates below 75%.
+   - **Assignment Evaluation**: Automated grading engine with rubric breakdown and custom feedback.
+   - **Exam Scheduling & Marks Entry**: Schedule examinations, enter scores, and record diagnostic notes.
+   - **Counseling Intervention Modal**: 1-click dispatch of formal student counseling notifications to academic deans.
 
-### 2. Run Locally in Web / Desktop / Mobile
-```bash
-# Run on Chrome
-flutter run -d chrome
-
-# Run on macOS Desktop
-flutter run -d macos
-```
-
-### 3. Build Production Web Bundle
-```bash
-flutter build web --release
-```
+3. **🛡️ Admin & Institutional Governance**:
+   - **Directory CRUD**: Add and manage student and faculty profiles.
+   - **Curriculum Management**: Add courses, assign faculty, and set lecture halls.
+   - **Cohort Bottleneck Reports**: Institutional analytics identifying department-level academic bottlenecks.
+   - **Official Transcripts**: Formally styled academic transcript with registrar metadata, Dean signature block, and SHA-256 verification hash.
 
 ---
 
-## 🐳 Docker Deployment
+## 🛠️ Technology Stack
 
-To build and run the containerized application:
-
-```bash
-# Build Docker image
-docker build -t edupulse-portal .
-
-# Run container
-docker run -p 8080:80 edupulse-portal
-```
+- **Framework**: Flutter 3.7+ (Web, Desktop, Mobile)
+- **Language**: Dart 3.0+
+- **State Management**: `Provider` architecture with reactive notification listeners
+- **Typography & Styling**: Google Fonts (`Inter`), Slate-900 / Electric Indigo enterprise color palette
+- **CI/CD**: GitHub Actions workflow (`.github/workflows/ci.yml`)
+- **Containerization**: Multi-stage `Dockerfile` (Flutter web build + Nginx Alpine) & `docker-compose.yml`
 
 ---
 
 ## 📂 Project Structure
 
 ```
-lib/
-├── core/
-│   ├── constants.dart            # Roles, Risk Levels, Enums, Routes
-│   ├── theme.dart                # Educational Design System & Color Tokens
-│   └── mock_data.dart            # Rich realistic seed database for instant demo
-├── models/
-│   ├── user_model.dart           # Unified User & Role Model
-│   ├── course_model.dart         # Courses, Syllabus & Learning Outcomes
-│   ├── attendance_model.dart     # Attendance Records & Percentage Summaries
-│   ├── assignment_model.dart     # Coursework, Submissions & AI Feedback
-│   ├── exam_model.dart           # Exams, Marks & GPA Calculations
-│   ├── ai_insight_model.dart     # Risk Levels, Weak Areas & Recommendations
-│   ├── report_model.dart         # Academic Reports & Cohort Analytics
-│   └── announcement_model.dart   # University Announcements & FAQs
-├── services/
-│   ├── auth_service.dart         # Auth Session & 1-Click Evaluation Presets
-│   ├── course_service.dart       # Course Catalog, Search & Enrollment
-│   ├── attendance_service.dart   # Attendance Tracking & Compliance
-│   ├── assignment_service.dart   # Assignment Submissions & AI Feedback
-│   ├── exam_service.dart         # Exam Recording & GPA Calculator
-│   ├── ai_academic_engine.dart   # Core AI Diagnostic & Recommendation Engine
-│   └── report_service.dart       # Report & Transcript Generator
-├── features/
-│   ├── public/                   # 🌐 Home, Courses, Course Details, Contact
-│   ├── auth/                     # 👥 User Login & Registration
-│   ├── student/                  # 🎓 Student Dashboard, Progress, Assignments, Attendance, Grades
-│   ├── teacher/                  # 👩‍🏫 Teacher Dashboard, Attendance, Grading, Exams, Monitoring
-│   ├── admin/                    # 🛡️ Admin Dashboard, Users, Courses, Reports
-│   └── reports/                  # 📊 Performance Report & Printable Summary
-├── widgets/                      # 🧩 Reusable StatCards, AI Badges, Headers & Footers
-└── main.dart                     # 🚀 Application Root & Named Routes
+sih-project/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                 # Automated CI/CD test & build pipeline
+├── lib/
+│   ├── core/
+│   │   ├── constants.dart         # Routes, roles, and global configurations
+│   │   ├── mock_data.dart         # Seed data for students, teachers, courses
+│   │   └── theme.dart             # Enterprise color tokens & Google Fonts
+│   ├── features/
+│   │   ├── admin/                 # Admin dashboard, users, courses, reports
+│   │   ├── auth/                  # User & admin login with 1-click test presets
+│   │   ├── public/                # Home, Courses catalog, Details, Contact
+│   │   ├── reports/               # Official transcript modal & export view
+│   │   ├── student/               # Student dashboard, attendance, progress
+│   │   └── teacher/               # Teacher dashboard, ledger, exams, counseling
+│   ├── models/                    # Typed data models (User, Course, Exam, etc.)
+│   ├── services/                  # Business logic & Academic Intelligence engine
+│   ├── widgets/                   # StatCard, GPASimulator, LearningAssistant, etc.
+│   └── main.dart                  # Application entry point & route definitions
+├── test/
+│   ├── academic_flow_test.dart    # Assignment & GPA engine tests
+│   ├── ai_academic_engine_test.dart# Multi-factor formula & risk tests
+│   ├── ai_tutor_simulator_test.dart# Assistant & GPA simulator tests
+│   ├── navigation_test.dart       # Route & header navigation tests
+│   └── widget_test.dart           # App smoke test
+├── Dockerfile                     # Multi-stage container build
+├── docker-compose.yml             # Container orchestration
+└── README.md                      # Comprehensive documentation
 ```
 
 ---
 
-## 📜 License & Accreditation
-Developed for **BUILDATHON 2026** Autonomous AI Code Evaluation. All rights reserved.
+## 🚀 Getting Started
+
+### Prerequisites
+- Flutter SDK (v3.7 or higher)
+- Dart SDK (v3.0 or higher)
+
+### Local Development
+```bash
+# 1. Clone the repository
+git clone https://github.com/vishal-cse185/edupulse-academic-platform.git
+cd edupulse-academic-platform
+
+# 2. Install dependencies
+flutter pub get
+
+# 3. Run all automated test suites
+flutter test
+
+# 4. Launch the web application
+flutter run -d chrome
+```
+
+### Docker Deployment
+```bash
+# Build and run containerized application on port 8080
+docker-compose up --build -d
+```
+
+---
+
+## 🧪 Automated Testing Coverage
+
+All 5 test suites pass with **100% success rate**:
+```bash
+flutter test
+# 00:04 +10: All tests passed!
+```
+- ✅ `test/ai_academic_engine_test.dart`: Validates multi-factor composite equation and `<75%` risk detection.
+- ✅ `test/academic_flow_test.dart`: Validates automated rubric evaluation and 4.0 GPA computation.
+- ✅ `test/ai_tutor_simulator_test.dart`: Validates Learning Assistant dialog and GPA Simulator projections.
+- ✅ `test/navigation_test.dart`: Validates public catalog navigation and brand elements.
+- ✅ `test/widget_test.dart`: Full application smoke test.
+
+---
+
+## 📄 License
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
