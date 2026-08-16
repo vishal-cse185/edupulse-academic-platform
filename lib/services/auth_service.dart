@@ -1,157 +1,116 @@
-import 'package:flutter/foundation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import '../core/constants.dart';
+import '../core/mock_data.dart';
 import '../models/user_model.dart';
 
-class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class AuthService extends ChangeNotifier {
+  UserModel? _currentUser;
+  bool _isLoading = false;
+  String? _errorMessage;
 
-  User? get currentUser => _auth.currentUser;
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
+  UserModel? get currentUser => _currentUser;
+  bool get isLoading => _isLoading;
+  bool get isAuthenticated => _currentUser != null;
+  String? get errorMessage => _errorMessage;
 
-  // Parent/Teacher Sign Up
-  Future<UserModel?> signUpWithEmail({
+  UserRole get currentRole => _currentUser?.role ?? UserRole.student;
+
+  AuthService() {
+    // Default initial user for instant demo accessibility
+    _currentUser = MockData.demoStudent1;
+  }
+
+  // Quick Demo Login Switcher for Judges / Evaluators
+  void loginAsStudent({bool isAtRisk = false}) {
+    _currentUser = isAtRisk ? MockData.demoStudentAtRisk : MockData.demoStudent1;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  void loginAsTeacher() {
+    _currentUser = MockData.demoTeacher1;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  void loginAsAdmin() {
+    _currentUser = MockData.demoAdmin;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  Future<bool> login(String email, String password, UserRole role) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    await Future.delayed(const Duration(milliseconds: 400)); // Simulate async
+
+    final cleanEmail = email.trim().toLowerCase();
+
+    if (cleanEmail == MockData.demoAdmin.email.toLowerCase() || role == UserRole.admin) {
+      _currentUser = MockData.demoAdmin;
+    } else if (cleanEmail == MockData.demoTeacher1.email.toLowerCase() || role == UserRole.teacher) {
+      _currentUser = MockData.demoTeacher1;
+    } else if (cleanEmail == MockData.demoStudentAtRisk.email.toLowerCase()) {
+      _currentUser = MockData.demoStudentAtRisk;
+    } else {
+      _currentUser = UserModel(
+        id: 'usr_${DateTime.now().millisecondsSinceEpoch}',
+        email: cleanEmail.isNotEmpty ? cleanEmail : 'user@edupulse.ai',
+        name: cleanEmail.isNotEmpty ? cleanEmail.split('@').first.toUpperCase() : 'Student User',
+        role: role,
+        department: 'Computer Science',
+        studentIdNumber: role == UserRole.student ? 'STD-${DateTime.now().millisecond}' : null,
+        enrolledCourseIds: ['crs_001', 'crs_002'],
+      );
+    }
+
+    _isLoading = false;
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> register({
+    required String name,
     required String email,
     required String password,
-    required String displayName,
     required UserRole role,
+    String? department,
   }) async {
-    try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
 
-      final user = credential.user;
-      if (user == null) return null;
+    await Future.delayed(const Duration(milliseconds: 400));
 
-      await user.updateDisplayName(displayName);
+    _currentUser = UserModel(
+      id: 'usr_${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      email: email.trim().toLowerCase(),
+      role: role,
+      department: department ?? 'General Studies',
+      studentIdNumber: role == UserRole.student ? 'ID-${DateTime.now().millisecond}' : null,
+      enrolledCourseIds: ['crs_001'],
+    );
 
-      final userModel = UserModel(
-        uid: user.uid,
-        email: email,
-        displayName: displayName,
-        role: role,
-        createdAt: DateTime.now(),
-        lastLoginAt: DateTime.now(),
-      );
-
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(userModel.toFirestore());
-
-      return userModel;
-    } catch (e) {
-      debugPrint('Sign up error: $e');
-      rethrow;
-    }
+    _isLoading = false;
+    notifyListeners();
+    return true;
   }
 
-  // Parent/Teacher Sign In
-  Future<UserModel?> signInWithEmail(String email, String password) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-      if (currentUser != null) {
-        // Update last login
-        await _firestore.collection('users').doc(currentUser!.uid).update({
-          'lastLoginAt': FieldValue.serverTimestamp(),
-        });
-
-        final doc =
-            await _firestore.collection('users').doc(currentUser!.uid).get();
-        return UserModel.fromFirestore(doc);
-      }
-      return null;
-    } catch (e) {
-      debugPrint('Sign in error: $e');
-      rethrow;
-    }
+  void logout() {
+    _currentUser = null;
+    notifyListeners();
   }
 
-  // Student Sign In (using student ID lookup)
-  Future<UserModel?> signInAsStudent(String studentId) async {
-    try {
-      // Check if student exists
-      final studentDoc =
-          await _firestore.collection('students').doc(studentId).get();
-      if (!studentDoc.exists) {
-        throw Exception('Student ID not found');
-      }
-
-      final studentData = studentDoc.data()!;
-
-      // Check if student has a userId (already created an auth account)
-      String? userId = studentData['userId'];
-
-      if (userId == null) {
-        // Create anonymous auth session for this student
-        final credential = await _auth.signInAnonymously();
-        userId = credential.user!.uid;
-
-        // Link this auth user to the student
-        await _firestore.collection('students').doc(studentId).update({
-          'userId': userId,
-        });
-
-        // Create user document
-        final userModel = UserModel(
-          uid: userId,
-          email: '$studentId@student.internal',
-          displayName: studentData['fullName'] ?? 'Student',
-          role: UserRole.student,
-          createdAt: DateTime.now(),
-          lastLoginAt: DateTime.now(),
-        );
-        await _firestore
-            .collection('users')
-            .doc(userId)
-            .set(userModel.toFirestore());
-
-        return userModel;
-      } else {
-        // Student has an existing auth session - we can't sign in with anonymous again
-        // For simplicity, we'll create a new anonymous session each time
-        final credential = await _auth.signInAnonymously();
-        final newUserId = credential.user!.uid;
-
-        // Update student with new userId
-        await _firestore.collection('students').doc(studentId).update({
-          'userId': newUserId,
-        });
-
-        final userModel = UserModel(
-          uid: newUserId,
-          email: '$studentId@student.internal',
-          displayName: studentData['fullName'] ?? 'Student',
-          role: UserRole.student,
-          createdAt: DateTime.now(),
-          lastLoginAt: DateTime.now(),
-        );
-        await _firestore
-            .collection('users')
-            .doc(newUserId)
-            .set(userModel.toFirestore());
-
-        return userModel;
-      }
-    } catch (e) {
-      debugPrint('Student sign in error: $e');
-      rethrow;
-    }
-  }
-
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
-
-  Future<UserModel?> getCurrentUserModel() async {
-    if (currentUser == null) return null;
-    final doc =
-        await _firestore.collection('users').doc(currentUser!.uid).get();
-    if (!doc.exists) return null;
-    return UserModel.fromFirestore(doc);
+  void updateProfile({String? name, String? department, String? avatarUrl}) {
+    if (_currentUser == null) return;
+    _currentUser = _currentUser!.copyWith(
+      name: name,
+      department: department,
+      avatarUrl: avatarUrl,
+    );
+    notifyListeners();
   }
 }

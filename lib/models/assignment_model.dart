@@ -1,111 +1,152 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-enum AssignmentStatus { assigned, inProgress, completed, overdue }
+import '../core/constants.dart';
 
 class AssignmentModel {
-  final String assignmentId;
-  final String createdByType; // 'parent' or 'teacher'
-  final String createdById;
-  final String studentId;
+  final String id;
+  final String courseId;
+  final String courseTitle;
+  final String teacherId;
   final String title;
   final String description;
-  final List<String> attachmentUrls;
-  final DateTime? dueDate;
-  final AssignmentStatus status;
-  final DateTime createdAt;
+  final DateTime dueDate;
+  final int maxScore;
+  final List<String> rubricCriteria;
+  final String subject;
 
   AssignmentModel({
-    required this.assignmentId,
-    required this.createdByType,
-    required this.createdById,
-    required this.studentId,
+    required this.id,
+    required this.courseId,
+    required this.courseTitle,
+    required this.teacherId,
     required this.title,
     required this.description,
-    this.attachmentUrls = const [],
-    this.dueDate,
-    this.status = AssignmentStatus.assigned,
-    required this.createdAt,
+    required this.dueDate,
+    required this.maxScore,
+    this.rubricCriteria = const [],
+    required this.subject,
   });
 
-  factory AssignmentModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+  bool get isPastDue => DateTime.now().isAfter(dueDate);
+
+  factory AssignmentModel.fromJson(Map<String, dynamic> json) {
     return AssignmentModel(
-      assignmentId: doc.id,
-      createdByType: data['createdByType'] ?? 'teacher',
-      createdById: data['createdById'] ?? '',
-      studentId: data['studentId'] ?? '',
-      title: data['title'] ?? '',
-      description: data['description'] ?? '',
-      attachmentUrls: List<String>.from(data['attachments'] ?? []),
-      dueDate: (data['dueDate'] as Timestamp?)?.toDate(),
-      status: AssignmentStatus.values.firstWhere(
-        (e) => e.name == data['status'],
-        orElse: () => AssignmentStatus.assigned,
-      ),
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      id: json['id'] as String,
+      courseId: json['courseId'] as String,
+      courseTitle: json['courseTitle'] as String,
+      teacherId: json['teacherId'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+      dueDate: DateTime.parse(json['dueDate'] as String),
+      maxScore: json['maxScore'] as int? ?? 100,
+      rubricCriteria: List<String>.from(json['rubricCriteria'] ?? []),
+      subject: json['subject'] as String? ?? 'General',
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toJson() {
     return {
-      'createdByType': createdByType,
-      'createdById': createdById,
-      'studentId': studentId,
+      'id': id,
+      'courseId': courseId,
+      'courseTitle': courseTitle,
+      'teacherId': teacherId,
       'title': title,
       'description': description,
-      'attachments': attachmentUrls,
-      'dueDate': dueDate != null ? Timestamp.fromDate(dueDate!) : null,
-      'status': status.name,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'updatedAt': FieldValue.serverTimestamp(),
+      'dueDate': dueDate.toIso8601String(),
+      'maxScore': maxScore,
+      'rubricCriteria': rubricCriteria,
+      'subject': subject,
     };
   }
 }
 
-class AssignmentSubmission {
-  final String submissionId;
+class AssignmentSubmissionModel {
+  final String id;
   final String assignmentId;
   final String studentId;
-  final String content;
-  final List<String> attachmentUrls;
+  final String studentName;
+  final String submissionContent;
   final DateTime submittedAt;
-  final String? reviewNotes;
-  final String? grade;
+  final double? score;
+  final String? teacherFeedback;
+  final String? aiFeedback;
+  final List<String> weakConceptsIdentified;
+  final AssignmentStatus status;
 
-  AssignmentSubmission({
-    required this.submissionId,
+  AssignmentSubmissionModel({
+    required this.id,
     required this.assignmentId,
     required this.studentId,
-    required this.content,
-    this.attachmentUrls = const [],
+    required this.studentName,
+    required this.submissionContent,
     required this.submittedAt,
-    this.reviewNotes,
-    this.grade,
+    this.score,
+    this.teacherFeedback,
+    this.aiFeedback,
+    this.weakConceptsIdentified = const [],
+    required this.status,
   });
 
-  factory AssignmentSubmission.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return AssignmentSubmission(
-      submissionId: doc.id,
-      assignmentId: data['assignmentId'] ?? '',
-      studentId: data['studentId'] ?? '',
-      content: data['content'] ?? '',
-      attachmentUrls: List<String>.from(data['attachments'] ?? []),
-      submittedAt: (data['submittedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      reviewNotes: data['reviewNotes'],
-      grade: data['grade'],
+  factory AssignmentSubmissionModel.fromJson(Map<String, dynamic> json) {
+    return AssignmentSubmissionModel(
+      id: json['id'] as String,
+      assignmentId: json['assignmentId'] as String,
+      studentId: json['studentId'] as String,
+      studentName: json['studentName'] as String,
+      submissionContent: json['submissionContent'] as String,
+      submittedAt: DateTime.parse(json['submittedAt'] as String),
+      score: (json['score'] as num?)?.toDouble(),
+      teacherFeedback: json['teacherFeedback'] as String?,
+      aiFeedback: json['aiFeedback'] as String?,
+      weakConceptsIdentified:
+          List<String>.from(json['weakConceptsIdentified'] ?? []),
+      status: AssignmentStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => AssignmentStatus.submitted,
+      ),
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'assignmentId': assignmentId,
       'studentId': studentId,
-      'content': content,
-      'attachments': attachmentUrls,
-      'submittedAt': Timestamp.fromDate(submittedAt),
-      'reviewNotes': reviewNotes,
-      'grade': grade,
+      'studentName': studentName,
+      'submissionContent': submissionContent,
+      'submittedAt': submittedAt.toIso8601String(),
+      'score': score,
+      'teacherFeedback': teacherFeedback,
+      'aiFeedback': aiFeedback,
+      'weakConceptsIdentified': weakConceptsIdentified,
+      'status': status.name,
     };
+  }
+
+  AssignmentSubmissionModel copyWith({
+    String? id,
+    String? assignmentId,
+    String? studentId,
+    String? studentName,
+    String? submissionContent,
+    DateTime? submittedAt,
+    double? score,
+    String? teacherFeedback,
+    String? aiFeedback,
+    List<String>? weakConceptsIdentified,
+    AssignmentStatus? status,
+  }) {
+    return AssignmentSubmissionModel(
+      id: id ?? this.id,
+      assignmentId: assignmentId ?? this.assignmentId,
+      studentId: studentId ?? this.studentId,
+      studentName: studentName ?? this.studentName,
+      submissionContent: submissionContent ?? this.submissionContent,
+      submittedAt: submittedAt ?? this.submittedAt,
+      score: score ?? this.score,
+      teacherFeedback: teacherFeedback ?? this.teacherFeedback,
+      aiFeedback: aiFeedback ?? this.aiFeedback,
+      weakConceptsIdentified:
+          weakConceptsIdentified ?? this.weakConceptsIdentified,
+      status: status ?? this.status,
+    );
   }
 }

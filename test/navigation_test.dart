@@ -1,13 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application/main.dart';
 
 void main() {
-  testWidgets('EduPulse AI application smoke test', (WidgetTester tester) async {
+  testWidgets('App renders Home Screen and Navigation Header properly', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const EduPulseApp());
     await tester.pumpAndSettle();
 
-    // Verify main app branding is rendered
+    // Verify Brand Title is present
     expect(find.text('EduPulse AI'), findsWidgets);
+    expect(find.text('Explore Courses'), findsOneWidget);
+    expect(find.text('Sign In to Portal'), findsOneWidget);
   });
 }

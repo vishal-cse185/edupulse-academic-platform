@@ -47,8 +47,9 @@ class _DesktopAppWrapperState extends State<DesktopAppWrapper> {
   Widget build(BuildContext context) {
     if (!_isDesktop()) return widget.child;
 
-    return Scaffold(
-      body: Row(
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Row(
         children: [
           // Desktop Sidebar (Optional, for visual confirmation)
           Container(
