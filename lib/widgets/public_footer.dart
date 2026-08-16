@@ -42,7 +42,7 @@ class PublicFooter extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                         const Text(
-                          'EduPulse AI',
+                          'EduPulse',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -53,7 +53,7 @@ class PublicFooter extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      'AI-Powered Education Management & Academic Intelligence platform providing predictive learning diagnostics and institutional analytics.',
+                      'Comprehensive Education Management & Academic Intelligence platform providing predictive learning diagnostics and institutional analytics.',
                       style: TextStyle(
                         color: Color(0xFF94A3B8),
                         fontSize: 12.5,
@@ -91,14 +91,14 @@ class PublicFooter extends StatelessWidget {
                 ),
               ),
 
-              // Column 3: AI Capabilities
+              // Column 3: Capabilities
               SizedBox(
                 width: isDesktop ? 220 : double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Text(
-                      'AI Capabilities',
+                      'Core Capabilities',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 13.5,
@@ -116,7 +116,7 @@ class PublicFooter extends StatelessWidget {
                             color: Color(0xFF94A3B8),
                             fontSize: 12,
                             height: 1.6)),
-                    Text('• Automated Study Planner',
+                    Text('• Personalized Study Planner',
                         style: TextStyle(
                             color: Color(0xFF94A3B8),
                             fontSize: 12,
@@ -138,11 +138,11 @@ class PublicFooter extends StatelessWidget {
             alignment: WrapAlignment.spaceBetween,
             children: const [
               Text(
-                '© 2026 EduPulse AI. Education Management Portal - All Rights Reserved.',
+                '© 2026 EduPulse. Academic Management Platform - All Rights Reserved.',
                 style: TextStyle(color: Color(0xFF64748B), fontSize: 11.5),
               ),
               Text(
-                'Architected for Autonomous AI Evaluation',
+                'National Accreditation & Academic Governance Standards',
                 style: TextStyle(color: Color(0xFF64748B), fontSize: 11.5),
               ),
             ],

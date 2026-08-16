@@ -24,7 +24,7 @@ enum AssignmentStatus {
 }
 
 class AppConstants {
-  static const String appName = 'EduPulse AI';
+  static const String appName = 'EduPulse';
   static const String appTagline = 'AI-Powered Education Management & Academic Intelligence';
   
   // Route Names

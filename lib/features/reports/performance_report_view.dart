@@ -50,7 +50,7 @@ class PerformanceReportModal extends StatelessWidget {
                     Icon(Icons.school, color: Colors.white, size: 22),
                     SizedBox(width: 10),
                     Text(
-                      'Official Academic Performance Summary & AI Diagnosis',
+                      'Official Academic Performance Summary & Diagnostics',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -318,9 +318,9 @@ class PerformanceReportModal extends StatelessWidget {
                         )),
                   const SizedBox(height: 24),
 
-                  // Section 5: AI Recommendations
+                  // Section 5: Academic Recommendations
                   const Text(
-                    '5. AI Personalized Recommendations',
+                    '5. Personalized Academic Remediation Recommendations',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -375,7 +375,7 @@ class PerformanceReportModal extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           const Text(
-                            'Verified by AI Academic Governance Board',
+                            'Verified by Academic Governance & Accreditation Board',
                             style: TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary,

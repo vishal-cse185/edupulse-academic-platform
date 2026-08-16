@@ -172,7 +172,7 @@ class StudentDashboardScreen extends StatelessWidget {
                                 context, AppConstants.routeStudentProgress);
                           },
                           icon: const Icon(Icons.insights, size: 15),
-                          label: const Text('AI Progress Plan'),
+                          label: const Text('Academic Progress Plan'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.accent,
                           ),
@@ -468,7 +468,7 @@ class StudentDashboardScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 8),
                                       const Text(
-                                        'Generate your official transcript summary with AI diagnosis and risk assessment.',
+                                        'Generate your official transcript summary with learning diagnostics and academic risk assessment.',
                                         style: TextStyle(
                                           color: Color(0xFFE2E8F0),
                                           fontSize: 12,
@@ -522,7 +522,7 @@ class StudentDashboardScreen extends StatelessWidget {
           );
         },
         icon: const Icon(Icons.auto_awesome, color: Colors.white),
-        label: const Text('24/7 AI Tutor',
+        label: const Text('Study Advisor',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF4F46E5),
       ),

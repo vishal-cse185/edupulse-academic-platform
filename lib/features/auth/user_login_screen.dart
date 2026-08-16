@@ -133,7 +133,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                       ),
                       const SizedBox(width: 10),
                       const Text(
-                        'EduPulse AI',
+                        'EduPulse',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,

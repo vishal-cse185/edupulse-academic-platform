@@ -1,11 +1,11 @@
-# 🎓 EduPulse AI — Education Management & Academic Intelligence Portal
+# 🎓 EduPulse — Education Management & Academic Intelligence Platform
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![Flutter](https://img.shields.io/badge/Flutter-3.7+-02569B.svg?logo=flutter)]()
-[![AI Intelligence](https://img.shields.io/badge/AI_Engine-Diagnostic_Heuristics-6366F1.svg)]()
-[![Evaluation](https://img.shields.io/badge/AI_Evaluator-Ready-10B981.svg)]()
+[![Architecture](https://img.shields.io/badge/Architecture-Clean_Layered-6366F1.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-100%25_Passing-10B981.svg)]()
 
-> **Built for BUILDATHON 2026** — Fully autonomous, production-ready **Education Management Portal** equipped with an **AI-Powered Academic Intelligence Engine** for continuous risk detection, weak topic diagnostics, automated grading feedback, and institutional decision support.
+> **EduPulse** — Production-ready, enterprise-grade **Education Management Platform** equipped with an **Academic Intelligence Engine** for continuous risk detection, weak topic diagnostics, automated rubric feedback, and institutional accreditation decision support.
 
 ---
 

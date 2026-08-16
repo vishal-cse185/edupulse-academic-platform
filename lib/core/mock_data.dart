@@ -589,10 +589,10 @@ class MockData {
   // FAQs
   static final List<FAQItemModel> faqs = [
     FAQItemModel(
-      question: 'How does the AI Academic Intelligence Engine identify weak areas?',
+      question: 'How does the Academic Intelligence Engine identify weak areas?',
       answer:
-          'EduPulse AI evaluates continuous student signals including weighted assignment scores, midterm exam percentiles, rubric criteria feedback, and attendance trends. It uses multi-factor diagnostic heuristics to pinpoint exact concept gaps.',
-      category: 'AI Engine',
+          'EduPulse evaluates continuous student signals including weighted assignment scores, midterm exam percentiles, rubric criteria feedback, and attendance trends. It uses multi-factor diagnostic heuristics to pinpoint exact concept gaps.',
+      category: 'Analytics Engine',
     ),
     FAQItemModel(
       question: 'What triggers an "At-Risk" alert for teachers and administrators?',
@@ -601,9 +601,9 @@ class MockData {
       category: 'Academic Flow',
     ),
     FAQItemModel(
-      question: 'How can students submit assignments and receive AI feedback?',
+      question: 'How can students submit assignments and receive automated feedback?',
       answer:
-          'Students navigate to the Assignments section, upload their project link or solution text, and click Submit. EduPulse AI provides instant automated preliminary feedback and identifies improvement topics before final teacher grading.',
+          'Students navigate to the Assignments section, upload their project link or solution text, and click Submit. EduPulse provides instant automated preliminary feedback and identifies improvement topics before final teacher grading.',
       category: 'Student Portal',
     ),
     FAQItemModel(

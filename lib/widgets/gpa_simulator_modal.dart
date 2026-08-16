@@ -86,7 +86,7 @@ class _GPASimulatorModalState extends State<GPASimulatorModal> {
                       SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'AI "What-If" GPA & Risk Recovery Simulator',
+                          '"What-If" GPA & Academic Recovery Simulator',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,

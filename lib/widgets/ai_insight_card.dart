@@ -49,7 +49,7 @@ class AIInsightCard extends StatelessWidget {
                     Icon(Icons.auto_awesome, color: Colors.white, size: 20),
                     SizedBox(width: 8),
                     Text(
-                      'AI Academic Intelligence',
+                      'Academic Intelligence Diagnostics',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

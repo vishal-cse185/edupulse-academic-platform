@@ -19,7 +19,7 @@ class _AIStudyTutorModalState extends State<AIStudyTutorModal> {
     {
       'isUser': false,
       'text':
-          'Hello! I am your EduPulse 24/7 AI Socratic Academic Tutor. I can explain complex concepts, debug algorithms, or generate practice quizzes for your enrolled courses. What topic would you like to review today?',
+          'Hello! I am your EduPulse Academic Learning Assistant. I can explain complex syllabus concepts, step through algorithms, or generate practice quizzes for your enrolled courses. What topic would you like to review today?',
       'time': 'Just now',
     },
   ];
@@ -134,7 +134,7 @@ class _AIStudyTutorModalState extends State<AIStudyTutorModal> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'EduPulse 24/7 AI Socratic Tutor',
+                          'EduPulse Academic Learning Assistant',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -142,7 +142,7 @@ class _AIStudyTutorModalState extends State<AIStudyTutorModal> {
                           ),
                         ),
                         Text(
-                          'Interactive concept explanations & remedial practice',
+                          'Concept walkthroughs, algorithm proofs & remedial practice',
                           style: TextStyle(
                             color: Color(0xFFE0E7FF),
                             fontSize: 11,

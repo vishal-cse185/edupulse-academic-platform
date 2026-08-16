@@ -48,15 +48,15 @@ class PublicHeader extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: const [
                     Text(
-                      'EduPulse AI',
+                      'EduPulse',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,
                       ),
                     ),
                     Text(
-                      'Education Portal',
+                      'Academic Management Portal',
                       style: TextStyle(
                         fontSize: 9.5,
                         color: AppColors.textSecondary,

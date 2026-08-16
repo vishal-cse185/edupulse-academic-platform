@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              'Accredited AI Academic Intelligence Standard 2026',
+                              'Accredited Academic Intelligence & Learning Standard 2026',
                               style: TextStyle(
                                 color: Color(0xFFE2E8F0),
                                 fontSize: 12,
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // Main Headline
                     Text(
-                      'Unified Education Management\n& Predictive Academic Intelligence',
+                      'Unified Education Management\n& Academic Learning Analytics',
                       style: TextStyle(
                         fontSize: isDesktop ? 46 : 28,
                         fontWeight: FontWeight.w800,
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 780),
                       child: Text(
-                        'Empowering students, distinguished faculty, and academic deans with automated attendance tracking, multi-factor risk diagnostics, continuous assessment, and 24/7 Socratic AI tutoring.',
+                        'Empowering students, distinguished faculty, and academic deans with automated attendance tracking, multi-factor risk diagnostics, continuous assessment, and 24/7 interactive learning assistance.',
                         style: TextStyle(
                           fontSize: isDesktop ? 16 : 14,
                           color: const Color(0xFF94A3B8),
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           icon: const Icon(Icons.auto_awesome,
                               color: Color(0xFF818CF8), size: 18),
-                          label: const Text('Launch 24/7 AI Tutor',
+                          label: const Text('Launch Study Advisor',
                               style: TextStyle(color: Colors.white)),
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF475569)),
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _buildHeroMetric('14,500+', 'Enrolled Students'),
                           _buildHeroMetric('98.4%', 'Accreditation Compliance'),
                           _buildHeroMetric('< 48 hrs', 'Early Risk Intervention'),
-                          _buildHeroMetric('24 / 7', 'Socratic AI Tutoring'),
+                          _buildHeroMetric('24 / 7', 'Academic Study Support'),
                         ],
                       ),
                     ),
@@ -277,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         _buildPillarCard(
                           icon: Icons.psychology_outlined,
-                          title: 'Multi-Factor AI Diagnostics',
+                          title: 'Multi-Factor Learning Diagnostics',
                           desc:
                               'Evaluates 40% exams, 35% assignments, and 25% attendance to flag early attrition risks.',
                           color: AppColors.accent,

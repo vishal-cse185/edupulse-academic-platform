@@ -8,7 +8,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify Brand Title and Explore Courses button are present
-    expect(find.text('EduPulse AI'), findsWidgets);
+    expect(find.text('EduPulse'), findsWidgets);
     expect(find.text('Explore Courses'), findsOneWidget);
   });
 }
