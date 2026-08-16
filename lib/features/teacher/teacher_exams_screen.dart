@@ -158,13 +158,25 @@ class _TeacherExamsScreenState extends State<TeacherExamsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Scheduled & Completed Examinations',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Scheduled & Completed Examinations',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            _showScheduleExamDialog(context);
+                          },
+                          icon: const Icon(Icons.add_task, size: 16),
+                          label: const Text('Schedule New Exam'),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                     ...exams.map((exam) {
@@ -261,6 +273,88 @@ class _TeacherExamsScreenState extends State<TeacherExamsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showScheduleExamDialog(BuildContext context) {
+    final titleCtrl = TextEditingController();
+    final courseCtrl = TextEditingController(text: 'CS301 - Data Structures & Algorithms');
+    final totalMarksCtrl = TextEditingController(text: '100');
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: const [
+            Icon(Icons.add_task, color: AppColors.primary, size: 22),
+            SizedBox(width: 8),
+            Text('Schedule New Examination'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleCtrl,
+              decoration: const InputDecoration(
+                labelText: 'Exam Title',
+                hintText: 'e.g. Endterm Practical Assessment',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: courseCtrl,
+              decoration: const InputDecoration(
+                labelText: 'Course Offering',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: totalMarksCtrl,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Maximum Total Marks',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (titleCtrl.text.isNotEmpty) {
+                final examService = Provider.of<ExamService>(context, listen: false);
+                examService.addExam(ExamModel(
+                  id: 'ex_${DateTime.now().millisecondsSinceEpoch}',
+                  courseId: 'crs_001',
+                  courseTitle: courseCtrl.text,
+                  title: titleCtrl.text,
+                  examDate: DateTime.now().add(const Duration(days: 14)),
+                  durationMinutes: 120,
+                  totalMarks: int.tryParse(totalMarksCtrl.text) ?? 100,
+                  weightagePercentage: 30.0,
+                  room: 'Hall 402',
+                ));
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Examination "${titleCtrl.text}" scheduled successfully!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              }
+            },
+            child: const Text('Schedule Exam'),
+          ),
+        ],
       ),
     );
   }

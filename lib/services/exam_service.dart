@@ -57,6 +57,8 @@ class ExamService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addExam(ExamModel exam) => createExam(exam);
+
   void recordGrade(ExamGradeModel grade) {
     _grades.removeWhere(
       (g) => g.examId == grade.examId && g.studentId == grade.studentId,

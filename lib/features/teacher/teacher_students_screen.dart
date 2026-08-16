@@ -215,14 +215,7 @@ class TeacherStudentsScreen extends StatelessWidget {
                                     const SizedBox(width: 8),
                                     ElevatedButton.icon(
                                       onPressed: () {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                                'Academic Counseling invitation sent to ${student.name}!'),
-                                            backgroundColor: AppColors.primary,
-                                          ),
-                                        );
+                                        _showInterventionDialog(context, student);
                                       },
                                       icon: const Icon(Icons.mail_outline,
                                           size: 16),
@@ -242,6 +235,101 @@ class TeacherStudentsScreen extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showInterventionDialog(BuildContext context, dynamic student) {
+    String selectedAction = '1-on-1 Academic Mentorship';
+    final notesController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 24),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text('Academic Intervention: ${student.name}'),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Select an institutional recovery intervention protocol for this student:',
+                  style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 14),
+                DropdownButtonFormField<String>(
+                  value: selectedAction,
+                  decoration: const InputDecoration(
+                    labelText: 'Intervention Protocol',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: '1-on-1 Academic Mentorship',
+                      child: Text('👨‍🏫 1-on-1 Academic Mentorship'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Mandatory Remedial Lab Session',
+                      child: Text('🔬 Mandatory Remedial Lab Session'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Attendance Accreditation Review',
+                      child: Text('⚠️ Attendance Accreditation Review'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Parent-Teacher Consultation',
+                      child: Text('📞 Parent-Teacher Consultation'),
+                    ),
+                  ],
+                  onChanged: (val) {
+                    if (val != null) setDialogState(() => selectedAction = val);
+                  },
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: notesController,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    labelText: 'Counseling Notes & Specific Action Items',
+                    hintText: 'e.g. Schedule review for Red-Black Trees before next lab exam...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'Intervention "$selectedAction" dispatched to ${student.name} & Dean of Academics!'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.send_rounded, size: 16),
+              label: const Text('Dispatch Intervention Alert'),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             ),
           ],
         ),

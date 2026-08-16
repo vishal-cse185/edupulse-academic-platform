@@ -18,8 +18,9 @@ class _ContactScreenState extends State<ContactScreen> {
   final _emailController = TextEditingController();
   final _subjectController = TextEditingController();
   final _messageController = TextEditingController();
-
+  String _selectedCategory = 'Advising';
   bool _isSubmitted = false;
+  String _ticketId = '';
 
   @override
   void dispose() {
@@ -34,11 +35,11 @@ class _ContactScreenState extends State<ContactScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isSubmitted = true;
+        _ticketId = 'TICK-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              'Thank you! Your inquiry has been routed to Academic Support.'),
+        SnackBar(
+          content: Text('Inquiry Ticket #$_ticketId dispatched!'),
           backgroundColor: AppColors.success,
         ),
       );
@@ -47,7 +48,7 @@ class _ContactScreenState extends State<ContactScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = MediaQuery.of(context).size.width > 800;
+    final isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -55,14 +56,14 @@ class _ContactScreenState extends State<ContactScreen> {
           children: [
             const PublicHeader(activeRoute: AppConstants.routeContact),
 
-            // Banner
+            // Hero Banner
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 64 : 24,
-                vertical: 40,
+                horizontal: isDesktop ? 64 : 20,
+                vertical: 48,
               ),
-              color: const Color(0xFF0F172A),
+              color: AppColors.primaryDark,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
                 child: Column(
@@ -97,248 +98,23 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 1200),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Left Column: Contact Form & Info
-                    Expanded(
-                      flex: 3,
-                      child: Column(
+                child: isDesktop
+                    ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Send an Inquiry',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Our academic advisors and technical support response time is within 24 hours.',
-                            style: TextStyle(
-                              fontSize: 13.5,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-
-                          if (_isSubmitted)
-                            Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: AppColors.successBg,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                    color: AppColors.success.withOpacity(0.3)),
-                              ),
-                              child: Column(
-                                children: [
-                                  const Icon(Icons.check_circle,
-                                      size: 48, color: AppColors.success),
-                                  const SizedBox(height: 12),
-                                  const Text(
-                                    'Inquiry Successfully Dispatched',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  const Text(
-                                    'Ticket #AI-2026-904 created. Check your email for status updates.',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _isSubmitted = false;
-                                        _nameController.clear();
-                                        _emailController.clear();
-                                        _subjectController.clear();
-                                        _messageController.clear();
-                                      });
-                                    },
-                                    child: const Text('Send Another Message'),
-                                  ),
-                                ],
-                              ),
-                            )
-                          else
-                            Form(
-                              key: _formKey,
-                              child: Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: AppColors.border),
-                                ),
-                                child: Column(
-                                  children: [
-                                    TextFormField(
-                                      controller: _nameController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Full Name',
-                                        prefixIcon:
-                                            Icon(Icons.person_outline),
-                                      ),
-                                      validator: (v) => v == null || v.isEmpty
-                                          ? 'Please enter your name'
-                                          : null,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    TextFormField(
-                                      controller: _emailController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Email Address',
-                                        prefixIcon:
-                                            Icon(Icons.email_outlined),
-                                      ),
-                                      validator: (v) => v == null ||
-                                              !v.contains('@')
-                                          ? 'Please enter a valid email'
-                                          : null,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    TextFormField(
-                                      controller: _subjectController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Subject',
-                                        prefixIcon:
-                                            Icon(Icons.subject_outlined),
-                                      ),
-                                      validator: (v) => v == null || v.isEmpty
-                                          ? 'Please enter a subject'
-                                          : null,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    TextFormField(
-                                      controller: _messageController,
-                                      maxLines: 4,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Your Message or Question',
-                                        alignLabelWithHint: true,
-                                      ),
-                                      validator: (v) => v == null || v.isEmpty
-                                          ? 'Please write your message'
-                                          : null,
-                                    ),
-                                    const SizedBox(height: 24),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton.icon(
-                                        onPressed: _handleSubmit,
-                                        icon: const Icon(Icons.send_rounded,
-                                            size: 18),
-                                        label: const Text('Submit Inquiry'),
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 16),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                          Expanded(flex: 3, child: _buildInquiryForm()),
+                          const SizedBox(width: 36),
+                          Expanded(flex: 2, child: _buildFaqSection()),
                         ],
-                      ),
-                    ),
-
-                    const SizedBox(width: 32),
-
-                    // Right Column: FAQs & Office Details
-                    Expanded(
-                      flex: 2,
-                      child: Column(
+                      )
+                    : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Frequently Asked Questions',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ...MockData.faqs.map((faq) {
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              child: ExpansionTile(
-                                title: Text(
-                                  faq.question,
-                                  style: const TextStyle(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                ),
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: Text(
-                                      faq.answer,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: AppColors.textSecondary,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
-                          const SizedBox(height: 24),
-
-                          // Contact Info Card
-                          Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: AppColors.background,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.border),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Academic Administration Office',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                ),
-                                SizedBox(height: 12),
-                                Text(
-                                  '📍 Turing Computing Complex, Level 4\n'
-                                  '📧 registrar@edupulse.ai\n'
-                                  '📞 +1 (800) 555-EDUPULSE\n'
-                                  '⏰ Hours: Mon-Fri 08:30 AM - 05:30 PM',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: AppColors.textSecondary,
-                                    height: 1.6,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          _buildInquiryForm(),
+                          const SizedBox(height: 36),
+                          _buildFaqSection(),
                         ],
                       ),
-                    ),
-                  ],
-                ),
               ),
             ),
 
@@ -346,6 +122,240 @@ class _ContactScreenState extends State<ContactScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInquiryForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Send an Inquiry',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Our academic advisors and technical support response time is within 24 hours.',
+          style: TextStyle(
+            fontSize: 13.5,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        if (_isSubmitted)
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.successBg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.success.withOpacity(0.3)),
+            ),
+            child: Column(
+              children: [
+                const Icon(Icons.check_circle, size: 48, color: AppColors.success),
+                const SizedBox(height: 12),
+                const Text(
+                  'Inquiry Ticket Received!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF065F46),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Ticket ID: #$_ticketId\nAn academic counselor will contact you shortly.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF065F46),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isSubmitted = false;
+                      _nameController.clear();
+                      _emailController.clear();
+                      _subjectController.clear();
+                      _messageController.clear();
+                    });
+                  },
+                  child: const Text('Submit Another Inquiry'),
+                ),
+              ],
+            ),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Full Name',
+                      prefixIcon: Icon(Icons.person_outline, size: 20),
+                    ),
+                    validator: (v) => v!.isEmpty ? 'Please enter your name' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email Address',
+                      prefixIcon: Icon(Icons.email_outlined, size: 20),
+                    ),
+                    validator: (v) => !v!.contains('@') ? 'Enter a valid email' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedCategory,
+                    decoration: const InputDecoration(
+                      labelText: 'Inquiry Category',
+                      prefixIcon: Icon(Icons.category_outlined, size: 20),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Advising',
+                        child: Text('Academic Advising'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Enrollment',
+                        child: Text('Course Enrollment'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Technical',
+                        child: Text('Portal Technical Issue'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'General',
+                        child: Text('General Inquiry'),
+                      ),
+                    ],
+                    onChanged: (val) => setState(() => _selectedCategory = val!),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _messageController,
+                    maxLines: 4,
+                    decoration: const InputDecoration(
+                      labelText: 'Message / Details',
+                      alignLabelWithHint: true,
+                    ),
+                    validator: (v) => v!.isEmpty ? 'Please enter your message' : null,
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _handleSubmit,
+                      icon: const Icon(Icons.send_rounded, size: 18),
+                      label: const Text('Submit Inquiry'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildFaqSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Frequently Asked Questions',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 16),
+        ...MockData.faqs.map((faq) {
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ExpansionTile(
+              title: Text(
+                faq.question,
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    faq.answer,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+        const SizedBox(height: 24),
+
+        // Contact Info Card
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Academic Administration Office',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: 12),
+              Text(
+                '📍 Turing Computing Complex, Level 4\n'
+                '📧 registrar@edupulse.ai\n'
+                '📞 +1 (800) 555-EDUPULSE\n'
+                '⏰ Hours: Mon-Fri 08:30 AM - 05:30 PM',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.6,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
